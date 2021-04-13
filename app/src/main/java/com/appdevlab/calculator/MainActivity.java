@@ -1,5 +1,4 @@
 package com.appdevlab.calculator;
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -7,17 +6,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import java.util.ArrayList;
 
 import com.itis.libs.parserng.android.expressParser.MathExpression;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
     private TextView primary;
     private TextView secondary;
     final static String TAG = "MY_LOG_TAG";
+
     ArrayList<TextView> digits, operations, constants, others, everything;
 
     @Override
@@ -85,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
                 catch (Exception e) {
                     Log.d(TAG, e.getMessage());
                 }
-
             }
 
             @Override
