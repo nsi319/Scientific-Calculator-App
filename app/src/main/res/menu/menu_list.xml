@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+            <item
+                android:id="@+id/history"
+                android:orderInCategory="100"
+                android:title="History"
+                app:showAsAction="never"
+                android:icon="@drawable/ic_history_black_24dp"
+                android:visible="true" />
+
+    <item
+        android:id="@+id/clear"
+        android:orderInCategory="100"
+        android:title="Clear History"
+        app:showAsAction="never"
+        android:icon="@drawable/ic_history_black_24dp"
+        android:visible="true" />
+
+
+        </menu>

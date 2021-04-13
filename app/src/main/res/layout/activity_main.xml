@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:theme="@style/AppTheme.Light.Green"
-    tools:context=".MainActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:theme="@style/AppTheme"
+    android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -84,7 +84,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="?attr/panel2"
         android:backgroundTint="@color/green"
         android:orientation="vertical"
         android:padding="@dimen/standard_margin">
@@ -423,7 +422,7 @@
                 android:layout_weight="1"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:gravity="center"
-                android:text="−"
+                android:text="-"
                 android:textSize="@dimen/panel_1_button_text_port" />
 
             <TextView
