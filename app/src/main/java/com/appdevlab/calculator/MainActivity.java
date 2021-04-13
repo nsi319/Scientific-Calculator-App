@@ -21,7 +21,6 @@ import com.itis.libs.parserng.android.expressParser.MathExpression;
 
 
 public class MainActivity extends AppCompatActivity {
-
     final static String SHARED_PREF = "com.appdevlab.calculator.SHARED_PREF";
     SharedPreferences sharedPreferences;
     final static String TAG = "MY_LOG_TAG";
@@ -175,6 +174,8 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.history:
                 Toast.makeText(getApplicationContext(),"Showing calculator history", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this,History.class);
+                startActivity(intent);
                 return true;
 
             case R.id.clear:
