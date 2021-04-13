@@ -1,23 +1,25 @@
 package com.appdevlab.calculator;
-import android.annotation.SuppressLint;
+
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.ArrayList;
 
 import com.itis.libs.parserng.android.expressParser.MathExpression;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
     private TextView primary;
     private TextView secondary;
     final static String TAG = "MY_LOG_TAG";
+    final static ArrayList<String> errors = new ArrayList<>();
+
     ArrayList<TextView> digits, operations, constants, others, everything;
 
     @Override
@@ -44,13 +46,11 @@ public class MainActivity extends AppCompatActivity {
         constants.add((TextView) findViewById(R.id.constant_pi));
         constants.add((TextView) findViewById(R.id.constant_e));
 
-
         others = new ArrayList<TextView>();
         others.add((TextView) findViewById(R.id.decimal_point));
         others.add((TextView) findViewById(R.id.equal_to));
         others.add((TextView) findViewById(R.id.open_parenthesis));
         others.add((TextView) findViewById(R.id.close_parenthesis));
-
 
         operations = new ArrayList<TextView>();
         operations.add((TextView) findViewById(R.id.operation_add));
@@ -66,26 +66,27 @@ public class MainActivity extends AppCompatActivity {
         operations.add((TextView) findViewById(R.id.operation_exponent));
         operations.add((TextView) findViewById(R.id.operation_square_root));
 
-
         everything = new ArrayList<TextView>();
         everything.addAll(digits);
         everything.addAll(operations);
         everything.addAll(constants);
         everything.addAll(others);
 
+        errors.add("SYNTAX ERROR");
+        errors.add("Infinity");
+        errors.add("A SYNTAX ERROR OCCURED");
+        
         primary.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 try {
                     MathExpression expr = new MathExpression(s.toString());
                     String answer = expr.solve();
-                    if(!s.toString().equals(""))
+                    if (!s.toString().equals(""))
                         secondary.setText(answer);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     Log.d(TAG, e.getMessage());
                 }
-
             }
 
             @Override
@@ -103,12 +104,13 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     String display = primary.getText().toString();
-
                     if (id.equals("=")) {
-                        primary.setText(secondary.getText().toString());
+                        if (errors.contains(secondary.getText().toString()))
+                            primary.setText("");
+                        else
+                            primary.setText(secondary.getText().toString());
                         secondary.setText("");
-                    }
-                    else
+                    } else
                         primary.setText(display.concat(id));
                 }
             });
@@ -117,14 +119,15 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.delete).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!primary.getText().toString().equals("")) {
+                if (!primary.getText().toString().equals("")) {
                     String display = primary.getText().toString();
-                    if(display.length()==1)
+                    if (display.length() == 1)
                         secondary.setText("");
-                    primary.setText(display.substring(0,display.length()-1));
+                    primary.setText(display.substring(0, display.length() - 1));
                 }
             }
         });
+
         findViewById(R.id.delete).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
