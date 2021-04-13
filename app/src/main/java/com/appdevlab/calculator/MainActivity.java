@@ -1,11 +1,17 @@
 package com.appdevlab.calculator;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,18 +21,23 @@ import com.itis.libs.parserng.android.expressParser.MathExpression;
 
 
 public class MainActivity extends AppCompatActivity {
-    private TextView primary;
-    private TextView secondary;
+    final static String SHARED_PREF = "com.appdevlab.calculator.SHARED_PREF";
+    SharedPreferences sharedPreferences;
     final static String TAG = "MY_LOG_TAG";
     final static ArrayList<String> errors = new ArrayList<>();
-
-    ArrayList<TextView> digits, operations, constants, others, everything;
+    private TextView primary;
+    private TextView secondary;
+    ArrayList<TextView> digits, operations, constants, others, collection;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(R.style.AppTheme_Light_Green);
         setContentView(R.layout.activity_main);
+        sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        getSupportActionBar().setElevation(0);
+
         primary = (TextView) findViewById(R.id.primary);
         secondary = (TextView) findViewById(R.id.secondary);
 
@@ -66,16 +77,16 @@ public class MainActivity extends AppCompatActivity {
         operations.add((TextView) findViewById(R.id.operation_exponent));
         operations.add((TextView) findViewById(R.id.operation_square_root));
 
-        everything = new ArrayList<TextView>();
-        everything.addAll(digits);
-        everything.addAll(operations);
-        everything.addAll(constants);
-        everything.addAll(others);
+        collection = new ArrayList<TextView>();
+        collection.addAll(digits);
+        collection.addAll(operations);
+        collection.addAll(constants);
+        collection.addAll(others);
 
         errors.add("SYNTAX ERROR");
         errors.add("Infinity");
         errors.add("A SYNTAX ERROR OCCURED");
-        
+
         primary.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -98,20 +109,40 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        for (int i = 0; i < everything.size(); i++) {
-            final String id = (String) everything.get(i).getText();
-            everything.get(i).setOnClickListener(new View.OnClickListener() {
+        for (int i = 0; i < collection.size(); i++) {
+            final String id = (String) collection.get(i).getText();
+            collection.get(i).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String display = primary.getText().toString();
+                    String displayPrimary = primary.getText().toString();
+                    String displaySecondary = secondary.getText().toString();
+
                     if (id.equals("=")) {
-                        if (errors.contains(secondary.getText().toString()))
+
+                        String historyPrimary, historySecondary;
+
+                        historyPrimary = sharedPreferences.getString("primary","");
+                        historySecondary = sharedPreferences.getString("secondary","");
+
+                        historyPrimary = historyPrimary + ";" + displayPrimary;
+
+                        if (errors.contains(displaySecondary)) {
                             primary.setText("");
-                        else
-                            primary.setText(secondary.getText().toString());
+                            historySecondary = historySecondary + ";" + "";
+                        }
+                        else {
+                            primary.setText(displaySecondary);
+                            historySecondary = historySecondary + ";" + displaySecondary;
+                        }
                         secondary.setText("");
+
+                        editor.putString("primary",historyPrimary);
+                        editor.putString("secondary",historySecondary);
+                        editor.commit();
+                        Toast.makeText(getApplicationContext(),"Saved to history",Toast.LENGTH_SHORT).show();
+
                     } else
-                        primary.setText(display.concat(id));
+                        primary.setText(displayPrimary.concat(id));
                 }
             });
         }
@@ -120,10 +151,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!primary.getText().toString().equals("")) {
-                    String display = primary.getText().toString();
-                    if (display.length() == 1)
+                    String displayPrimary = primary.getText().toString();
+                    if (displayPrimary.length() == 1)
                         secondary.setText("");
-                    primary.setText(display.substring(0, display.length() - 1));
+                    primary.setText(displayPrimary.substring(0, displayPrimary.length() - 1));
                 }
             }
         });
@@ -136,5 +167,32 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.history:
+                Toast.makeText(getApplicationContext(),"Showing calculator history", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this,History.class);
+                startActivity(intent);
+                return true;
+
+            case R.id.clear:
+                sharedPreferences = getSharedPreferences(SHARED_PREF,MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.clear();
+                editor.apply();
+                Toast.makeText(getApplicationContext(),"Cleared History", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_list, menu);
+        return true;
     }
 }

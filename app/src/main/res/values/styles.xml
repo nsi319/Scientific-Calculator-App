@@ -81,4 +81,18 @@
         <item name="colorPrimary">@color/red</item>
         <item name="colorPrimaryDark">@color/red_dark</item>
     </style>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="panel1">@color/panel_1_light</item>
+        <item name="panel2">@color/panel_2_light</item>
+        <item name="backspace">@mipmap/ic_backspace_black_24dp</item>
+        <item name="colorPrimary">@android:color/white</item>
+<!--        <item name="android:textColor">@android:color/black</item>-->
+        <item name="android:actionOverflowButtonStyle">@style/DotsDarkTheme</item>
+        <item name="colorPrimaryDark">@color/blue_dark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+      <style name="DotsDarkTheme" parent="@style/Widget.AppCompat.ActionButton.Overflow" >
+        <item name="android:tint">@android:color/black</item>
+    </style>
 </resources>
