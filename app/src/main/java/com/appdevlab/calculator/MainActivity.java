@@ -23,6 +23,7 @@ import com.itis.libs.parserng.android.expressParser.MathExpression;
 public class MainActivity extends AppCompatActivity {
     final static String SHARED_PREF = "com.appdevlab.calculator.SHARED_PREF";
     SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
     final static String TAG = "MY_LOG_TAG";
     final static ArrayList<String> errors = new ArrayList<>();
     private TextView primary;
@@ -34,14 +35,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
-        final SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor = sharedPreferences.edit();
 
         getSupportActionBar().setElevation(0);
 
         primary = (TextView) findViewById(R.id.primary);
         secondary = (TextView) findViewById(R.id.secondary);
 
-        digits = new ArrayList<TextView>();
+        digits = new ArrayList<>();
         digits.add((TextView) findViewById(R.id.number_0));
         digits.add((TextView) findViewById(R.id.number_1));
         digits.add((TextView) findViewById(R.id.number_2));
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if (errors.contains(displaySecondary)) {
                             primary.setText("");
-                            historySecondary = historySecondary + ";" + "";
+                            historySecondary += ";" + "";
                         }
                         else {
                             primary.setText(displaySecondary);
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
                         editor.putString("primary",historyPrimary);
                         editor.putString("secondary",historySecondary);
-                        editor.commit();
+                        editor.apply();
                         Toast.makeText(getApplicationContext(),"Saved to history",Toast.LENGTH_SHORT).show();
 
                     } else
@@ -180,10 +181,10 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.clear:
                 sharedPreferences = getSharedPreferences(SHARED_PREF,MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor = sharedPreferences.edit();
                 editor.clear();
                 editor.apply();
-                Toast.makeText(getApplicationContext(),"Cleared History", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,"Cleared History", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
