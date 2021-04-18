@@ -29,7 +29,7 @@ public class History extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
 
-        primary = new ArrayList<String>(Arrays.asList(sharedPreferences.getString("primary","").split(";")));
+        primary = (ArrayList<String>) Arrays.asList(sharedPreferences.getString("primary","").split(";"));
         secondary = new ArrayList<String>(Arrays.asList(sharedPreferences.getString("secondary","").split(";")));
 
         primary.remove("");
@@ -38,7 +38,6 @@ public class History extends AppCompatActivity {
         if(primary.size()==0) {
             title.setTextColor(Color.RED);
             title.setText("No History");
-            title.setBackgroundResource(R.drawable.ic_history_black_24dp);
         }
         else {
             final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
